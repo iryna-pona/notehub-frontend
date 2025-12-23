@@ -10,7 +10,7 @@ import Link from 'next/link';
 import NoteList from '@/components/NoteList/NoteList';
 import SearchBox from '@/components/SearchBox/SearchBox';
 import Pagination from '@/components/Pagination/Pagination';
-import ErrorMessage from '@/app/notes/filter/[...slug]/error';
+import ErrorMessage from '@/app/(private routes)/notes/filter/[...slug]/error';
 import Loading from '@/app/loading';
 import css from './NotesPage.module.css';
 
