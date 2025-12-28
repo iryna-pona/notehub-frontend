@@ -47,23 +47,31 @@ export async function checkSession(): Promise<User | null> {
 
 /* User */
 
-export async function getMe(): Promise<User | null> {
-  try {
-    const res = await api.get<User>('/api/users/me', { withCredentials: true });
-    return res.data ?? null;
-  } catch {
-    return null;
+export async function getMe(): Promise<User> {
+  const res = await api.get<User>('/api/users/me', {
+    withCredentials: true,
+  });
+
+  if (!res.data) {
+    throw new Error('Unauthorized');
   }
+
+  return res.data;
 }
 
-export async function updateMe(data: Partial<User>): Promise<User | null> {
-  try {
-    const res = await api.patch<User>('/api/users/me', data, { withCredentials: true });
-    return res.data ?? null;
-  } catch {
-    return null;
+
+export async function updateMe(data: Partial<User>): Promise<User> {
+  const res = await api.patch<User>('/api/users/me', data, {
+    withCredentials: true,
+  });
+
+  if (!res.data) {
+    throw new Error('Failed to update profile');
   }
+
+  return res.data;
 }
+
 
 /* Notes */
 
@@ -98,29 +106,37 @@ export async function fetchNotes(params: FetchNotesParams): Promise<FetchNotesRe
   }
 }
 
-export async function fetchNoteById(id: string): Promise<Note | null> {
-  try {
-    const res = await api.get<Note>(`/api/notes/${id}`, { withCredentials: true });
-    return res.data ?? null;
-  } catch {
-    return null;
-  }
+export async function fetchNoteById(id: string): Promise<Note> {
+  const res = await api.get<Note>(`/api/notes/${id}`, { withCredentials: true });
+  
+  if (!res.data)
+    throw new Error('Note not found');
+  
+  return res.data;
 }
 
-export async function createNote(data: CreateNoteParams): Promise<Note | null> {
-  try {
-    const res = await api.post<Note>('/api/notes', data, { withCredentials: true });
-    return res.data ?? null;
-  } catch {
-    return null;
+export async function createNote(data: CreateNoteParams): Promise<Note> {
+  const res = await api.post<Note>('/api/notes', data, {
+    withCredentials: true,
+  });
+
+  if (!res.data) {
+    throw new Error('Failed to create note');
   }
+
+  return res.data;
 }
 
-export async function deleteNote(id: string): Promise<Note | null> {
-  try {
-    const res = await api.delete<Note>(`/api/notes/${id}`, { withCredentials: true });
-    return res.data ?? null;
-  } catch {
-    return null;
+
+export async function deleteNote(id: string): Promise<Note> {
+  const res = await api.delete<Note>(`/api/notes/${id}`, {
+    withCredentials: true,
+  });
+
+  if (!res.data) {
+    throw new Error('Failed to delete note');
   }
+
+  return res.data;
 }
+
