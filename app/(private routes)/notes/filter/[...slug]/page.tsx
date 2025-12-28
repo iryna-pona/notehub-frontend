@@ -5,13 +5,12 @@ import type { FetchNotesParams } from '@/lib/api/clientApi';
 import type { Metadata } from 'next';
 
 type Props = {
-  params: {
-    slug?: string[];
-  };
-};
+  params: Promise<{ slug?: string[] }>;
+}
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const filter = params.slug?.join(' / ') ?? 'all';
+  const { slug } = await params;
+  const filter = Array.isArray(slug) && slug.length > 0 ? slug.join(' / ') : 'all';
 
   const title = `Notes filter: ${filter} | NoteHub`;
   const description = `Notes filtered by ${filter} in NoteHub`;
@@ -22,7 +21,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       title,
       description,
-      url: `/notes/filter/${params.slug?.join('/') ?? ''}`,
+      url: `/notes/filter/${slug?.join('/') ?? ''}`,
       images: [
         {
           url: 'https://ac.goit.global/fullstack/react/notehub-og-meta.jpg',
@@ -35,12 +34,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-interface PageProps {
-  params: Promise<{ slug?: string[] }>;
-}
-
-export default async function NotesPage(props: PageProps) {
-  const { slug } = await props.params;
+export default async function NotesPage({ params }: Props) {
+  const { slug } = await params;
 
   const queryClient = new QueryClient();
 
